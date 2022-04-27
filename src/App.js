@@ -57,7 +57,7 @@ class App extends Component {
     return (
       <React.Fragment>
         <div>
-          hello
+          Hello, Urbit.
         </div>
       </React.Fragment>
     )
