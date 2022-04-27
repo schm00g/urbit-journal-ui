@@ -198,6 +198,16 @@ class App extends Component {
     }
   };
 
+  getUpdates = async () => {
+    const { latestUpdate: latest } = this.state;
+    const since = latest === null ? Date.now() : latest;
+    const path = `/updates/since/${since}`;
+    return window.urbit.scry({
+      app: "journal",
+      path: path,
+    });
+  };
+
   render(){
     return (
       <React.Fragment>
