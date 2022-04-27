@@ -115,6 +115,16 @@ class App extends Component {
     }
   };
 
+  submitNew = (id, txt) => {
+    window.urbit.poke({
+      app: "journal",
+      mark: "journal-action",
+      json: { add: { id: id, txt: txt } },
+      onSuccess: () => this.setState({ newDraft: {} }),
+      onError: () => this.setErrorMsg("New entry rejected"),
+    });
+  };
+
   render(){
     return (
       <React.Fragment>
