@@ -136,6 +136,16 @@ class App extends Component {
     } else this.cancelEdit(id);
   };
 
+  delete = (id) => {
+    window.urbit.poke({
+      app: "journal",
+      mark: "journal-action",
+      json: {"del": {"id": id}},
+      onError: ()=>this.setErrorMsg("Deletion rejected")
+    })
+    this.setState({rmModalShow: false, entryToDelete: null})
+  };
+
   render(){
     return (
       <React.Fragment>
