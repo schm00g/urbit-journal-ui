@@ -125,6 +125,17 @@ class App extends Component {
     });
   };
 
+  submitEdit = (id, txt) => {
+    if (txt !== null) {
+      window.urbit.poke({
+        app: "journal",
+        mark: "journal-action",
+        json: { edit: { id: id, txt: txt } },
+        onError: () => this.setErrorMsg("Edit rejected"),
+      });
+    } else this.cancelEdit(id);
+  };
+
   render(){
     return (
       <React.Fragment>
