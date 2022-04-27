@@ -1,0 +1,1 @@
+window.ship = "sampel-palnet";
