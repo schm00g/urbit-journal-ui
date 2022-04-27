@@ -146,6 +146,39 @@ class App extends Component {
     this.setState({rmModalShow: false, entryToDelete: null})
   };
 
+  getSearch = async () => {
+    const { searchStart: ss, searchEnd: se, latestUpdate: lu } = this.state;
+    if (lu !== null && ss !== null && se !== null) {
+      let start = ss.getTime();
+      let end = se.getTime();
+      if (start < 0) start = 0;
+      if (end < 0) end = 0;
+      const path = `/entries/between/${start}/${end}`;
+      window.urbit
+        .scry({
+          app: "journal",
+          path: path,
+        })
+        .then(
+          (result) => {
+            this.setState({
+              searchTime: result.time,
+              searchStart: null,
+              searchEnd: null,
+              resultStart: ss,
+              resultEnd: se,
+              results: result.entries,
+            });
+          },
+          (err) => {
+            this.setErrorMsg("Search failed");
+          }
+        );
+    } else {
+      lu !== null && this.setErrorMsg("Searh failed");
+    }
+  };
+
   render(){
     return (
       <React.Fragment>
