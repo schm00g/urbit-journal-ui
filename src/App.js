@@ -62,6 +62,59 @@ class App extends Component {
     })
   };
 
+  handleUpdate = (upd) => {
+    const { entries, drafts, results, latestUpdate } = this.state;
+    if (upd.time !== latestUpdate) {
+      if ("entries" in upd) {
+        this.setState({ entries: entries.concat(upd.entries) });
+      } else if ("add" in upd) {
+        const { time, add } = upd;
+        const eInd = this.spot(add.id, entries);
+        const rInd = this.spot(add.id, results);
+        const toE =
+          entries.length === 0 || add.id > entries[entries.length - 1].id;
+        const toR = this.inSearch(add.id, time);
+        toE && entries.splice(eInd, 0, add);
+        toR && results.splice(rInd, 0, add);
+        this.setState({
+          ...(toE && { entries: entries }),
+          ...(toR && { results: results }),
+          latestUpdate: time,
+        });
+      } else if ("edit" in upd) {
+        const { time, edit } = upd;
+        const eInd = entries.findIndex((e) => e.id === edit.id);
+        const rInd = results.findIndex((e) => e.id === edit.id);
+        const toE = eInd !== -1;
+        const toR = rInd !== -1 && this.inSearch(edit.id, time);
+        if (toE) entries[eInd] = edit;
+        if (toR) results[rInd] = edit;
+        (toE || toR) && delete drafts[edit.id];
+        this.setState({
+          ...(toE && { entries: entries }),
+          ...(toR && { results: results }),
+          ...((toE || toR) && { drafts: drafts }),
+          latestUpdate: time,
+        });
+      } else if ("del" in upd) {
+        const { time, del } = upd;
+        const eInd = entries.findIndex((e) => e.id === del.id);
+        const rInd = results.findIndex((e) => e.id === del.id);
+        const toE = eInd !== -1;
+        const toR = this.inSearch(del.id, time) && rInd !== -1;
+        toE && entries.splice(eInd, 1);
+        toR && results.splice(rInd, 1);
+        (toE || toR) && delete drafts[del.id];
+        this.setState({
+          ...(toE && { entries: entries }),
+          ...(toR && { results: results }),
+          ...((toE || toR) && { drafts: drafts }),
+          latestUpdate: time,
+        });
+      }
+    }
+  };
+
   render(){
     return (
       <React.Fragment>
