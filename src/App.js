@@ -179,6 +179,25 @@ class App extends Component {
     }
   };
 
+  reconnect = () => {
+    window.urbit.reset();
+    const latest = this.state.latestUpdate;
+    if (latest === null) {
+      this.init();
+    } else {
+      this.getUpdates().then(
+        (result) => {
+          result.logs.map((e) => this.handleUpdate(e));
+          this.subscribe();
+        },
+        (err) => {
+          this.setErrorMsg("Connection failed");
+          this.setState({ status: "err" });
+        }
+      );
+    }
+  };
+
   render(){
     return (
       <React.Fragment>
