@@ -53,6 +53,15 @@ class App extends Component {
     });
   };
 
+  setErrorMsg = (msg) => {
+    const {errors, errorCount} = this.state;
+    const id = errorCount + 1;
+    this.setState({
+      errors: errors.set(id, msg),
+      errorCount: id
+    })
+  };
+
   render(){
     return (
       <React.Fragment>
